@@ -2,7 +2,8 @@ lazy val root = (project in file(".")).
   settings(
     name := "SimpleScalaRestApi",
     version := "1.0",
-    scalaVersion := "2.12.7"
+    scalaVersion := "2.12.7",
+    test in assembly := {}
   )
 
 resolvers ++= Seq(
