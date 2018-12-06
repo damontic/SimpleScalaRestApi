@@ -6,6 +6,8 @@ import com.lonelyplanet.prometheus.directives.ResponseTimeRecordingDirectives
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.{ ContentTypes, HttpEntity }
 
+import co.s4n.domain.services.RootService
+
 object RootRoutes {
     private val responseTimeDirectives = ResponseTimeRecordingDirectives(PrometheusResponseTimeRecorder.Default)
     import responseTimeDirectives._
@@ -13,7 +15,7 @@ object RootRoutes {
         get {
             path("") {
                 recordResponseTime("/") {
-                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, "<h1>Say hello to the Root route</h1>"))
+                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, RootService.serve))
                 }
             }
         }
