@@ -1,0 +1,39 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: ssra-service
+spec:
+  selector:
+    app: ssra
+  ports:
+  - protocol: TCP
+    port: 8080
+    targetPort: 8080
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ssra-deployment
+  labels:
+    app: ssra
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ssra
+  template:
+    metadata:
+      labels:
+        app: ssra
+    spec:
+      containers:
+      - name: ssra
+        image: damontic/simplescalarestapi:0.0.0
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8080
+        env:
+        - name: ENVIRONMENT
+          value: "Development"
+        - name: VERSION
+          value: "0.0.0"

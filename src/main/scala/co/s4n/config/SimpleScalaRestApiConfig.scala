@@ -5,7 +5,7 @@ import com.bettercloud.vault.{Vault, VaultConfig}
 
 object SimpleScalaRestApiConfig {
 	val environment : String = sys.env.get("ENVIRONMENT").get
-	val consulEndpoint = "localhost"
+	val consulEndpoint = "consul-helm-consul-server.default.svc.cluster.local"
 	val vaultEndpoint = "http://127.0.0.1:8200"
 
 	val consulClient = new ConsulClient(consulEndpoint)
