@@ -13,17 +13,19 @@ resolvers ++= Seq(
  
 libraryDependencies ++= {
 
-    val akkaVersion = "2.5.18"
-    val akkaHttpVersion = "10.1.5"
-    val akkaStreamVersion = "2.5.18"
-    val prometheusAkkaHttpVersion = "0.3.3"
+    val akkaVersion = "2.5.19"
+    val akkaHttpVersion = "10.1.7"
+    val akkaStreamVersion = "2.5.19"
+    val prometheusAkkaHttpVersion = "0.4.0"
     val scalaTestVersion = "3.0.5"
+    val consulApiVersion = "1.4.2"
 
     Seq(
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
         "com.lonelyplanet" %% "prometheus-akka-http" % prometheusAkkaHttpVersion,
+        "com.ecwid.consul" % "consul-api" % consulApiVersion,
         "org.scalatest" % "scalatest_2.12" % scalaTestVersion % "test"
     )
 }
