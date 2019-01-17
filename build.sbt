@@ -8,7 +8,8 @@ lazy val root = (project in file(".")).
 
 resolvers ++= Seq(
     Resolver.DefaultMavenRepository,
-    Resolver.bintrayRepo("lonelyplanet", "maven")
+    Resolver.bintrayRepo("lonelyplanet", "maven"),
+    Resolver.bintrayRepo("janstenpickle", "maven")
 )
  
 libraryDependencies ++= {
@@ -19,6 +20,7 @@ libraryDependencies ++= {
     val prometheusAkkaHttpVersion = "0.4.0"
     val scalaTestVersion = "3.0.5"
     val consulApiVersion = "1.4.2"
+    val vaultJavaVersion = "3.1.0"
 
     Seq(
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
@@ -26,6 +28,7 @@ libraryDependencies ++= {
         "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
         "com.lonelyplanet" %% "prometheus-akka-http" % prometheusAkkaHttpVersion,
         "com.ecwid.consul" % "consul-api" % consulApiVersion,
+        "com.bettercloud" % "vault-java-driver" % vaultJavaVersion,
         "org.scalatest" % "scalatest_2.12" % scalaTestVersion % "test"
     )
 }
