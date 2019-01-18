@@ -7,17 +7,19 @@ object SimpleScalaRestApiConfig {
 	val environment : String = sys.env.get("ENVIRONMENT").get
 	val consulEndpoint = environment match {
 		case "Production" => "consul-helm-consul-server.default.svc.cluster.local"
+		case "Staging" => "consul-helm-consul-server.default.svc.cluster.local"
 		case "Development" => "consul-helm-consul-server.default.svc.cluster.local"
 		case default => "localhost"
 	}
 	val vaultEndpoint = environment match {
-		case "Production" => "http://127.0.0.1:8200"
-		case "Development" => "http://127.0.0.1:8200"
+		case "Production" => "https://vault-vault.default.svc.cluster.local:8200"
+		case "Staging" => "http://vault-vault.default.svc.cluster.local:8200"
+		case "Development" => "http://vault-vault.default.svc.cluster.local:8200"
 		case default => "http://127.0.0.1:8200"
 	}
 
 	val consulClient = new ConsulClient(consulEndpoint)
-	val vaultClient = initVaultclient()
+	// val vaultClient = initVaultclient()
 	var config : SimpleScalaRestApiConfig = init
 	
 	def apply(endpoint: String, password: String) : SimpleScalaRestApiConfig = new SimpleScalaRestApiConfig(endpoint, password)
@@ -26,9 +28,9 @@ object SimpleScalaRestApiConfig {
 	def init() : SimpleScalaRestApiConfig = {
 		val endpoint = consulClient.getKVValue(s"$environment/endpoint").getValue.getDecodedValue;
 
-		val password = vaultClient.logical().read("secret/password").getData().get("value");
+		// val password = vaultClient.logical().read("secret/password").getData().get("value");
 
-		SimpleScalaRestApiConfig(endpoint, password);
+		SimpleScalaRestApiConfig(endpoint, "password");
 	}
 
 	def reload() {

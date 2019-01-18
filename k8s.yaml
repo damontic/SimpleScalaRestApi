@@ -2,6 +2,8 @@ kind: Service
 apiVersion: v1
 metadata:
   name: ssra-service
+  labels:
+    app: ssra
 spec:
   selector:
     app: ssra
