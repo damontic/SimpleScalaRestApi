@@ -1,46 +1,55 @@
 package co.s4n.config;
 
-import com.ecwid.consul.v1.ConsulClient
+import co.s4n.environment.{Production , Staging, Development, Local}
 import com.bettercloud.vault.{Vault, VaultConfig}
 
 object SimpleScalaRestApiConfig {
-	val environment : String = sys.env.get("ENVIRONMENT").get
-	val consulEndpoint = environment match {
-		case "Production" => "consul-helm-consul-server.default.svc.cluster.local"
-		case "Staging" => "consul-helm-consul-server.default.svc.cluster.local"
-		case "Development" => "consul-helm-consul-server.default.svc.cluster.local"
-		case default => "localhost"
-	}
-	val vaultEndpoint = environment match {
-		case "Production" => "https://vault-vault.default.svc.cluster.local:8200"
-		case "Staging" => "http://vault-vault.default.svc.cluster.local:8200"
-		case "Development" => "http://vault-vault.default.svc.cluster.local:8200"
-		case default => "http://127.0.0.1:8200"
-	}
 
-	val consulClient = new ConsulClient(consulEndpoint)
-	// val vaultClient = initVaultclient()
-	var config : SimpleScalaRestApiConfig = init
-	
-	def apply(endpoint: String, password: String) : SimpleScalaRestApiConfig = new SimpleScalaRestApiConfig(endpoint, password)
-	def apply() : SimpleScalaRestApiConfig = config
+	val DatabaseEndpoint = "database_endpoint"
+	val DatabasePassword = "database_password"
 
-	def init() : SimpleScalaRestApiConfig = {
-		val endpoint = consulClient.getKVValue(s"$environment/endpoint").getValue.getDecodedValue;
+	var config : Option[SimpleScalaRestApiConfig] = None
 
-		// val password = vaultClient.logical().read("secret/password").getData().get("value");
+	def apply(
+				vaultEndpoint: String,
+				vaultSecretStore: String,
+				dbEndpoint: String,
+				dbPassword: String
+			) : SimpleScalaRestApiConfig =
+				new SimpleScalaRestApiConfig(
+												vaultEndpoint,
+												vaultSecretStore,
+												dbEndpoint,
+												dbPassword
+					)
 
-		SimpleScalaRestApiConfig(endpoint, "password");
-	}
+	def apply() : SimpleScalaRestApiConfig = config.get
 
-	def reload() {
-		config = init
-	}
-
-	def initVaultclient() : Vault = {
+	def init(vaultEndpoint: String, vaultSecretStore: String) : Unit = {
 		val vaultConfig = new VaultConfig().address(vaultEndpoint).build()
-		new Vault(vaultConfig)
+		val vaultClient = new Vault(vaultConfig)
+		val configurations = vaultClient.logical().
+			read(vaultSecretStore).getData()
+		val dbEndpoint = configurations.get(DatabaseEndpoint)
+		val dbPassword = configurations.get(DatabasePassword)
+
+		config = Some(SimpleScalaRestApiConfig(
+			vaultEndpoint,
+			vaultSecretStore,
+			dbEndpoint,
+			dbPassword
+		))
 	}
+
+	def reload() : Unit = {
+		init(config.get.vaultEndpoint, config.get.vaultSecretStore)
+	}
+
 }
 
-class SimpleScalaRestApiConfig(var endpoint: String, var password: String)
+class SimpleScalaRestApiConfig (
+	val vaultEndpoint: String,
+	val vaultSecretStore: String,
+	val dbEndpoint: String,
+	val dbPassword: String
+)

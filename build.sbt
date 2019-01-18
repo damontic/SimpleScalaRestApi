@@ -19,7 +19,6 @@ libraryDependencies ++= {
     val akkaStreamVersion = "2.5.19"
     val prometheusAkkaHttpVersion = "0.4.0"
     val scalaTestVersion = "3.0.5"
-    val consulApiVersion = "1.4.2"
     val vaultJavaVersion = "3.1.0"
 
     Seq(
@@ -27,7 +26,6 @@ libraryDependencies ++= {
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
         "com.lonelyplanet" %% "prometheus-akka-http" % prometheusAkkaHttpVersion,
-        "com.ecwid.consul" % "consul-api" % consulApiVersion,
         "com.bettercloud" % "vault-java-driver" % vaultJavaVersion,
         "org.scalatest" % "scalatest_2.12" % scalaTestVersion % "test"
     )
