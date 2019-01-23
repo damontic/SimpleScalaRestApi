@@ -23,13 +23,15 @@ object SimpleScalaRestApiConfig {
 												dbPassword
 					)
 
-	def apply() : SimpleScalaRestApiConfig = config.get
+	def apply() : SimpleScalaRestApiConfig = config match {
+		case Some(c) => c
+		case None => throw new Exception("You must init the configuration first.")
+	}
 
 	def init(vaultEndpoint: String, vaultSecretStore: String) : Unit = {
 		val vaultConfig = new VaultConfig().address(vaultEndpoint).build()
 		val vaultClient = new Vault(vaultConfig)
-		val configurations = vaultClient.logical().
-			read(vaultSecretStore).getData()
+		val configurations = vaultClient.logical().read(vaultSecretStore).getData()
 		val dbEndpoint = configurations.get(DatabaseEndpoint)
 		val dbPassword = configurations.get(DatabasePassword)
 
