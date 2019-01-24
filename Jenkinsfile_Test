@@ -8,9 +8,11 @@ pipeline {
                 docker { image 'damontic/git' }
             }
             steps {
-                git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
+                sh 'git clone https://github.marchex.com/dmontano/SimpleScalaRestApi.git'
+                sh (script: 'pwd', returnStdout: true)
                 dir ("SimpleScalaRestApi") {
                     script {
+                        sh 'pwd'
                         LS = sh (script: 'ls', returnStdout: true)
                         echo "LS: ${LS}"
                         TAGS = sh (script: 'git tag', returnStdout: true)
