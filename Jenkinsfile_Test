@@ -10,7 +10,9 @@ pipeline {
             steps {
                 git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
                 sh 'ls'
-                SSRA_NEXT_ALPHA_TAG = sh (script: 'semver -i prerelease --preid alpha $(git tag | tail -n 1)', returnStdout: true).trim()
+                SSRA_LATEST_TAG = sh (script: 'git tag | tail -n 1', returnStdout: true)
+                echo "LATES_TAG: ${SSRA_LATEST_TAG}"
+                SSRA_NEXT_ALPHA_TAG = sh (script: 'semver -i prerelease --preid alpha ${}', returnStdout: true)
                 echo "SSRA SSRA_NEXT_ALPHA_TAG: ${SSRA_NEXT_ALPHA_TAG}"
             }
         }
