@@ -1,0 +1,18 @@
+pipeline {
+    
+    agent none
+
+    stages {
+        stage("Checkout Code") {
+            agent {
+                docker { image 'alpine/semver' }
+            }
+            steps {
+                git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
+                sh 'ls'
+                SSRA_LAST_TAG = sh (script: 'semver | tail -n 1', returnStdout: true).trim()
+                echo "SSRA LAST_TAG: ${SSRA_LAST_TAG}"
+            }
+        }
+    }
+}

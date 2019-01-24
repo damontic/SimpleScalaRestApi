@@ -1,0 +1,17 @@
+pipeline {
+    
+    agent { label 'docker' }
+
+    stages {
+        stage('Build Container') {
+            steps {
+                sh "docker build -t qa-toolsnexus.marchex.com:5001/s4n/scalasimpletest ."
+            }
+        }
+        stage('Push Container') {
+            steps {
+                sh "docker push qa-toolsnexus.marchex.com:5001/s4n/scalasimpletest"
+            }
+        }
+    }
+}
