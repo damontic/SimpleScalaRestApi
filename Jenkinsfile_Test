@@ -3,19 +3,23 @@ pipeline {
     agent none
 
     stages {
+        stage("Get Latest Version") {
+            agent any
+            steps {
+                git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
+                script {
+                    SSRA_LATEST_TAG = sh (script: 'git tag | tail -n 1', returnStdout: true)
+                }
+                echo "LATEST_TAG: ${SSRA_LATEST_TAG}"
+            }
+        }
         stage("Checkout Code") {
             agent {
                 docker { image 'alpine/semver' }
             }
             steps {
-                git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
-                sh 'ls'
                 script {
-                    SSRA_LATEST_TAG = sh (script: 'git tag | tail -n 1', returnStdout: true)
-                }
-                echo "LATES_TAG: ${SSRA_LATEST_TAG}"
-                script {
-                    SSRA_NEXT_ALPHA_TAG = sh (script: 'semver -i prerelease --preid alpha ${}', returnStdout: true)
+                    SSRA_NEXT_ALPHA_TAG = sh (script: 'semver -i prerelease --preid alpha ${SSRA_LATEST_TAG}', returnStdout: true)
                 }
                 echo "SSRA SSRA_NEXT_ALPHA_TAG: ${SSRA_NEXT_ALPHA_TAG}"
             }
