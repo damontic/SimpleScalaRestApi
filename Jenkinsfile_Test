@@ -8,10 +8,14 @@ pipeline {
             steps {
                 git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
                 script {
-                    sh(script: 'ls', returnStdout: true)
-                    sh(script: 'git tag', returnStdout: true)
+                    LS = sh (script: 'ls', returnStdout: true)
+                    echo "LS: ${LS}"
+                    TAGS = sh (script: 'git tag', returnStdout: true)
+                    echo "TAGS: ${TAGS}"
                     SSRA_LATEST_TAG = sh (script: 'git tag | tail -n 1', returnStdout: true)
                 }
+                echo "LS: ${LS}"
+                echo "TAGS: ${TAGS}"
                 echo "LATEST_TAG: ${SSRA_LATEST_TAG}"
             }
         }
