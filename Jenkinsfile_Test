@@ -5,7 +5,7 @@ pipeline {
     stages {
         stage("Get Latest Version") {
             agent {
-                docker { image 'alpine/git' }
+                docker { image 'damontic/git' }
             }
             steps {
                 git 'git@github.marchex.com:dmontano/SimpleScalaRestApi.git'
