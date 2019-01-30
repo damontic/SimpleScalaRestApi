@@ -1,6 +1,7 @@
 FROM damontic/ojdk8-git-sbt-builder:latest as builder
 LABEL stage=intermediate
 ARG version=0.0.0
+ENV APP_VER ${version}
 WORKDIR /scala
 RUN git clone https://github.com/damontic/SimpleScalaRestApi.git
 WORKDIR /scala/SimpleScalaRestApi

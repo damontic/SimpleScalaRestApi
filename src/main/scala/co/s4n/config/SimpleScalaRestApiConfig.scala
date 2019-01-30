@@ -1,5 +1,7 @@
 package co.s4n.config;
 
+import scala.util.{Try, Success, Failure}
+
 import co.s4n.environment.{Production , Staging, Development, Local}
 import com.bettercloud.vault.{Vault, VaultConfig}
 
@@ -29,6 +31,7 @@ object SimpleScalaRestApiConfig {
 	}
 
 	def init(vaultEndpoint: String, vaultSecretStore: String) : Unit = {
+		println(s"[info] init params: vaultEndpoint = $vaultEndpoint / vaultSecretStore = $vaultSecretStore")
 		val vaultConfig = new VaultConfig().address(vaultEndpoint).build()
 		val vaultClient = new Vault(vaultConfig)
 		val configurations = vaultClient.logical().read(vaultSecretStore).getData()
@@ -41,7 +44,7 @@ object SimpleScalaRestApiConfig {
 			dbEndpoint,
 			dbPassword
 		))
-	}
+}
 
 	def reload() : Unit = {
 		init(config.get.vaultEndpoint, config.get.vaultSecretStore)
