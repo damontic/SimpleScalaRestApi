@@ -15,12 +15,14 @@ object SimpleScalaRestApiConfig {
 	def apply(
 				vaultEndpoint: String,
 				vaultSecretStore: String,
+				vaultToken: String,
 				dbEndpoint: String,
 				dbPassword: String
 			) : SimpleScalaRestApiConfig =
 				new SimpleScalaRestApiConfig(
 												vaultEndpoint,
 												vaultSecretStore,
+												vaultToken,
 												dbEndpoint,
 												dbPassword
 					)
@@ -30,9 +32,8 @@ object SimpleScalaRestApiConfig {
 		case None => throw new Exception("You must init the configuration first.")
 	}
 
-	def init(vaultEndpoint: String, vaultSecretStore: String) : Unit = {
-		println(s"[info] init params: vaultEndpoint = $vaultEndpoint / vaultSecretStore = $vaultSecretStore")
-		val vaultConfig = new VaultConfig().address(vaultEndpoint).build()
+	def init(vaultEndpoint: String, vaultSecretStore: String, vaultToken: String) : Unit = {
+		val vaultConfig = new VaultConfig().address(vaultEndpoint).token(vaultToken).build()
 		val vaultClient = new Vault(vaultConfig)
 		val configurations = vaultClient.logical().read(vaultSecretStore).getData()
 		val dbEndpoint = configurations.get(DatabaseEndpoint)
@@ -41,13 +42,14 @@ object SimpleScalaRestApiConfig {
 		config = Some(SimpleScalaRestApiConfig(
 			vaultEndpoint,
 			vaultSecretStore,
+			vaultToken,
 			dbEndpoint,
 			dbPassword
 		))
 }
 
 	def reload() : Unit = {
-		init(config.get.vaultEndpoint, config.get.vaultSecretStore)
+		init(config.get.vaultEndpoint, config.get.vaultSecretStore, config.get.vaultToken)
 	}
 
 }
@@ -55,6 +57,7 @@ object SimpleScalaRestApiConfig {
 class SimpleScalaRestApiConfig (
 	val vaultEndpoint: String,
 	val vaultSecretStore: String,
+	val vaultToken: String,
 	val dbEndpoint: String,
 	val dbPassword: String
 )
