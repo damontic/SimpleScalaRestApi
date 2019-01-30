@@ -1,6 +1,6 @@
 lazy val root = (project in file(".")).
   settings(
-    name := "SimpleScalaRestApi",
+    name := "simple-scala-rest-api",
     version      in ThisBuild := sys.env.get("APP_VER").getOrElse("0.0.0"),
     scalaVersion := "2.12.7",
     test in assembly := {}
