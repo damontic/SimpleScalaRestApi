@@ -17,6 +17,7 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 
 import com.typesafe.config.ConfigFactory
+import com.typesafe.config.Config
 
 import com.bettercloud.vault.{Vault, VaultConfig}
 
@@ -50,42 +51,15 @@ object WebServer {
         val configurations      = vaultClient.logical().read(vaultSecretStore).getData()
         */
 
-        val databaseDriver      = sys.env.get("SSRA_DATABASE_DRIVER").getOrElse(Some(conf.getString("ssra.database.driver"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(DatabaseDriver) // configurations.get(DatabaseDriver)
-        }
-        val databaseHost        = sys.env.get("SSRA_DATABASE_HOST").getOrElse(Some(conf.getString("ssra.database.host"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(DatabaseHost) // configurations.get(DatabaseHost)
-        }
-        val databasePort        = sys.env.get("SSRA_DATABASE_PORT").map(_.toInt).getOrElse(Some(conf.getInt("ssra.database.port"))) match {
-            case Some(s : Int) => s
-            case None => getFromVault(DatabasePort).toInt // configurations.get(DatabasePort).toInt
-        }
-        val databaseName        = sys.env.get("SSRA_DATABASE_NAME").getOrElse(Some(conf.getString("ssra.database.name"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(DatabaseName) // configurations.get(DatabaseName)
-        }
-        val databaseUser        = sys.env.get("SSRA_DATABASE_USER").getOrElse(Some(conf.getString("ssra.database.user"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(DatabaseUser) // configurations.get(DatabaseUser)
-        }
-        val databasePassword    = sys.env.get("SSRA_DATABASE_PASSWORD").getOrElse(Some(conf.getString("ssra.database.password"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(DatabasePassword) // configurations.get(DatabasePassword)
-        }
-        val databaseSslEnabled  = sys.env.get("SSRA_DATABASE_SSL_ENABLED").map(_.toBoolean).getOrElse(Some(conf.getBoolean("ssra.database.ssl_enabled"))) match {
-            case Some(s : Boolean) => s
-            case None => getFromVault(DatabaseSslEnabled).toBoolean //configurations.get(DatabaseSslEnabled).toBoolean
-        }
-        val serverIp    = sys.env.get("SSRA_SERVER_IP").getOrElse(Some(conf.getString("ssra.server.ip"))) match {
-            case Some(s : String) => s
-            case None => getFromVault(ServerIp) //configurations.get(ServerIp)
-        }
-        val serverPort : Int    = sys.env.get("SSRA_SERVER_PORT").map(_.toInt).getOrElse(Try(conf.getInt("ssra.server.port"))) match {
-            case Success(s : Int) => s
-            case Failure(e) => getFromVault(ServerPort).toInt // configurations.get(ServerPort).toInt
-        }
+        val databaseDriver = getConfigurationString("SSRA_DATABASE_DRIVER", "ssra.database.driver", DatabaseDriver, conf)
+        val databaseHost = getConfigurationString("SSRA_DATABASE_HOST", "ssra.database.host", DatabaseHost, conf)
+        val databasePort = getConfigurationInt("SSRA_DATABASE_PORT", "ssra.database.port", DatabasePort, conf)
+        val databaseName = getConfigurationString("SSRA_DATABASE_NAME", "ssra.database.name", DatabaseName, conf)
+        val databaseUser = getConfigurationString("SSRA_DATABASE_USER", "ssra.database.user", DatabaseUser, conf)
+        val databasePassword = getConfigurationString("SSRA_DATABASE_PASSWORD", "ssra.database.password", DatabasePassword, conf)
+        val databaseSslEnabled = getConfigurationBoolean("SSRA_DATABASE_SSL_ENABLED", "ssra.database.ssl_enabled", DatabaseSslEnabled, conf)
+        val serverIp = getConfigurationString("SSRA_SERVER_IP", "ssra.server.ip", ServerIp, conf)
+        val serverPort = getConfigurationInt("SSRA_SERVER_PORT", "ssra.server.port", ServerPort, conf)
 
         SimpleScalaRestApiConfig(
             vaultEndpoint, vaultSecretStore, vaultToken,
@@ -94,6 +68,36 @@ object WebServer {
             databaseSslEnabled,
             serverIp, serverPort
         )
+    }
+
+    def getConfigurationString(envVar : String, configName: String, consulName: String, conf: Config) : String = {
+        sys.env.get(envVar) match {
+            case Some(s) => s
+            case None => Try(conf.getString(configName)) match {
+                case Success(s) => s
+                case Failure(e) => getFromVault(consulName)
+            }
+        }
+    }
+
+    def getConfigurationInt(envVar : String, configName: String, consulName: String, conf: Config) : Int = {
+        sys.env.get(envVar) match {
+            case Some(s) => s.toInt
+            case None => Try(conf.getInt(configName)) match {
+                case Success(s) => s
+                case Failure(e) => getFromVault(consulName).toInt
+            }
+        }
+    }
+
+    def getConfigurationBoolean(envVar : String, configName: String, consulName: String, conf: Config) : Boolean = {
+        sys.env.get(envVar) match {
+            case Some(s) => s.toBoolean
+            case None => Try(conf.getBoolean(configName)) match {
+                case Success(s) => s
+                case Failure(e) => getFromVault(consulName).toBoolean
+            }
+        }
     }
 
     def getFromVault(key: String) : String = {
