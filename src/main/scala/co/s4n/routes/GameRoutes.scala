@@ -6,16 +6,17 @@ import com.lonelyplanet.prometheus.directives.ResponseTimeRecordingDirectives
 import akka.http.scaladsl.server.Directives._
 import akka.http.scaladsl.model.{ ContentTypes, HttpEntity }
 
-import co.s4n.domain.services.HelloService
+import co.s4n.domain.services.GameService
+import co.s4n.config.SimpleScalaRestApiConfig
 
-object HelloRoutes {
+object GameRoutes {
     private val responseTimeDirectives = ResponseTimeRecordingDirectives(PrometheusResponseTimeRecorder.Default)
     import responseTimeDirectives._
-    val routes = {
+    def routes(config : SimpleScalaRestApiConfig) = {
         get {
-            path("hello") {
-                recordResponseTime("/hello") {
-                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, HelloService.serve))
+            path("games") {
+                recordResponseTime("/games") {
+                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.games(config)))
                 }
             }
         }

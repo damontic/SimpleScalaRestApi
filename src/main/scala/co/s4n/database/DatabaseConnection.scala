@@ -7,6 +7,7 @@ import java.sql.Connection
 import java.util.Properties
 
 object DatabaseConnection {
+
     def databaseConnection(config: SimpleScalaRestApiConfig) : Connection = {
         Class.forName(config.databaseDriver)
         val dbUrl = s"jdbc:postgresql://${config.databaseHost}:${config.databasePort}/${config.databaseName}"
@@ -16,4 +17,5 @@ object DatabaseConnection {
         properties.setProperty("ssl", config.databaseSslEnabled.toString)
         DriverManager.getConnection(dbUrl, properties)
     }
+
 }

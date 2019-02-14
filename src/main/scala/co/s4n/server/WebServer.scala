@@ -20,7 +20,7 @@ import com.typesafe.config.ConfigFactory
 
 import com.bettercloud.vault.{Vault, VaultConfig}
 
-import co.s4n.routes.{ PrometheusRoutes, HelloRoutes, RootRoutes, ConfigRoutes}
+import co.s4n.routes.{ PrometheusRoutes, GameRoutes, RootRoutes, ConfigRoutes}
 import co.s4n.config.SimpleScalaRestApiConfig
 
 object WebServer {
@@ -116,7 +116,7 @@ object WebServer {
 
 class WebServer {
 
-    implicit val actorSystem = ActorSystem("ssra-system")
+    implicit val actorSystem = ActorSystem("webserver", ConfigFactory.load().getConfig("ssra.web-server-pool"))
     implicit val mat = ActorMaterializer()
     implicit val executionContext = actorSystem.dispatcher
 
@@ -128,7 +128,7 @@ class WebServer {
     var (simpleScalaRestApiConfig, routes, bindingFuture) = start()
 
     def restart() {
-        log.info("Server restart")
+        log.debug("Server restart")
         unbind()
         ConfigFactory.invalidateCaches
         val (s, r, b) = start()
@@ -138,24 +138,24 @@ class WebServer {
     }
 
     def unbind() = {
-        log.info("Server unbind")
+        log.debug("Server unbind")
         bindingFuture.flatMap(_.unbind())
     }
 
     def shutdown() = {
-        log.info("Server shutdown")
+        log.debug("Server shutdown")
         bindingFuture
                 .flatMap(_.unbind())                       // trigger unbinding from the port
                 .onComplete(_ => actorSystem.terminate())  // and shutdown when done
     }
 
     def start() : Tuple3[SimpleScalaRestApiConfig, Route, Future[ServerBinding]] = {
-        log.info("Server start")
+        log.debug("Server started")
         var simpleScalaRestApiConfig = WebServer.loadConfiguration()
         var routes =
             ConfigRoutes.routes(simpleScalaRestApiConfig, this) ~
             PrometheusRoutes.routes ~
-            HelloRoutes.routes ~
+            GameRoutes.routes(simpleScalaRestApiConfig) ~
             RootRoutes.routes
         var binding = Http().bindAndHandle(routes, simpleScalaRestApiConfig.serverIp, simpleScalaRestApiConfig.serverPort)
         (simpleScalaRestApiConfig, routes, binding)
