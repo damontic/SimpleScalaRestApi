@@ -18,11 +18,13 @@ object GameRoutes {
             get {
                 recordResponseTime("/games") {
                     complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.gamesAsHeaders(config)))
+                } ~
+                recordResponseTime("/games/{id}") {
+                    path(IntNumber) { id =>
+                        complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.gameAsHeader(config, id)))
+                    }
                 }
             }
-        } ~
-        path(IntNumber) { id =>
-            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.gameAsHeader(config, id)))
         }
     }
 }
