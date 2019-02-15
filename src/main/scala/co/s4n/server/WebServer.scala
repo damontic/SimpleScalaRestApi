@@ -45,12 +45,6 @@ object WebServer {
         val vaultSecretStore : String   = sys.env.get("SSRA_VAULT_SECRET_STORE").getOrElse(conf.getString("ssra.vault.secret_store"))
         val vaultToken : String         = sys.env.get("SSRA_VAULT_TOKEN").getOrElse(conf.getString("ssra.vault.token"))
 
-        /* TODO: better way to get missing configurations using only one Vault connection
-        val vaultConfig         = new VaultConfig().address(vaultEndpoint).token(vaultToken).build()
-        val vaultClient         = new Vault(vaultConfig)
-        val configurations      = vaultClient.logical().read(vaultSecretStore).getData()
-        */
-
         val databaseDriver = getConfigurationString("SSRA_DATABASE_DRIVER", "ssra.database.driver", DatabaseDriver, conf)
         val databaseHost = getConfigurationString("SSRA_DATABASE_HOST", "ssra.database.host", DatabaseHost, conf)
         val databasePort = getConfigurationInt("SSRA_DATABASE_PORT", "ssra.database.port", DatabasePort, conf)

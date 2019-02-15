@@ -4,6 +4,7 @@ import com.lonelyplanet.prometheus.PrometheusResponseTimeRecorder
 import com.lonelyplanet.prometheus.directives.ResponseTimeRecordingDirectives
 
 import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.PathMatchers.IntNumber
 import akka.http.scaladsl.model.{ ContentTypes, HttpEntity }
 
 import co.s4n.domain.services.GameService
@@ -13,12 +14,15 @@ object GameRoutes {
     private val responseTimeDirectives = ResponseTimeRecordingDirectives(PrometheusResponseTimeRecorder.Default)
     import responseTimeDirectives._
     def routes(config : SimpleScalaRestApiConfig) = {
-        get {
-            path("games") {
+        path("games") {
+            get {
                 recordResponseTime("/games") {
-                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.games(config)))
+                    complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.gamesAsHeaders(config)))
                 }
             }
+        } ~
+        path(IntNumber) { id =>
+            complete(HttpEntity(ContentTypes.`text/html(UTF-8)`, GameService.gameAsHeader(config, id)))
         }
     }
 }
