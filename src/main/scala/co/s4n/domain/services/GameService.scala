@@ -12,7 +12,7 @@ object GameService {
     }
 
     def gameAsHeader(config: SimpleScalaRestApiConfig, id: Int) : String = {
-        val game = GameRepository.gameById(config, id).map(_.name)
+        val game = GameRepository.gameById(config, id).map(_.name).getOrElse("No game found.")
         s"<h1>$game</h1>"
     }
 }
