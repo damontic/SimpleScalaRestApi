@@ -1,0 +1,7 @@
+stages:
+- name: Build
+  steps:
+  - runScriptConfig:
+      image: damontic/ojdk8-git-sbt-builder
+      shellScript: |-
+        sbt test
