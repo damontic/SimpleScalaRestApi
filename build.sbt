@@ -1,6 +1,6 @@
 lazy val root = (project in file(".")).
   settings(
-    name := "SimpleScalaRestApi",
+    name := "simple-scala-rest-api",
     version      in ThisBuild := sys.env.get("APP_VER").getOrElse("0.0.0"),
     scalaVersion := "2.12.7",
     test in assembly := {}
@@ -8,25 +8,31 @@ lazy val root = (project in file(".")).
 
 resolvers ++= Seq(
     Resolver.DefaultMavenRepository,
-    Resolver.bintrayRepo("lonelyplanet", "maven"),
-    Resolver.bintrayRepo("janstenpickle", "maven")
+    Resolver.bintrayRepo("lonelyplanet", "maven")
 )
  
 libraryDependencies ++= {
 
+    val configVersion = "1.3.2"
     val akkaVersion = "2.5.19"
     val akkaHttpVersion = "10.1.7"
     val akkaStreamVersion = "2.5.19"
+    val scalaJava8CompatVersion = "0.9.0"
     val prometheusAkkaHttpVersion = "0.4.0"
-    val scalaTestVersion = "3.0.5"
     val vaultJavaVersion = "3.1.0"
+    val postgresqlVersion = "42.2.5"
+
+    val scalaTestVersion = "3.0.5"
 
     Seq(
+        "com.typesafe" % "config" % configVersion,
         "com.typesafe.akka" %% "akka-actor" % akkaVersion,
         "com.typesafe.akka" %% "akka-http" % akkaHttpVersion,
         "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
+        "org.scala-lang.modules" %% "scala-java8-compat" % scalaJava8CompatVersion,
         "com.lonelyplanet" %% "prometheus-akka-http" % prometheusAkkaHttpVersion,
         "com.bettercloud" % "vault-java-driver" % vaultJavaVersion,
+        "org.postgresql" % "postgresql" % postgresqlVersion,
         "org.scalatest" % "scalatest_2.12" % scalaTestVersion % "test"
     )
 }

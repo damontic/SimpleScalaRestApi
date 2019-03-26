@@ -1,8 +1,5 @@
 package co.s4n.config;
 
-import co.s4n.environment.{Production , Staging, Development, Local}
-import com.bettercloud.vault.{Vault, VaultConfig}
-
 object SimpleScalaRestApiConfig {
 
 	val DatabaseEndpoint = "database_endpoint"
@@ -11,47 +8,56 @@ object SimpleScalaRestApiConfig {
 	var config : Option[SimpleScalaRestApiConfig] = None
 
 	def apply(
-				vaultEndpoint: String,
-				vaultSecretStore: String,
-				dbEndpoint: String,
-				dbPassword: String
+					vaultEndpoint: String,
+					vaultSecretStore: String,
+					vaultToken: String,
+					databaseDriver: String,
+					databaseHost: String,
+					databasePort: Int,
+					databaseName: String,
+					databaseUser: String,
+					databasePassword: String,
+					databaseSslEnabled: Boolean,
+					serverIp: String,
+					serverPort: Int
 			) : SimpleScalaRestApiConfig =
 				new SimpleScalaRestApiConfig(
-												vaultEndpoint,
-												vaultSecretStore,
-												dbEndpoint,
-												dbPassword
-					)
-
-	def apply() : SimpleScalaRestApiConfig = config match {
-		case Some(c) => c
-		case None => throw new Exception("You must init the configuration first.")
-	}
-
-	def init(vaultEndpoint: String, vaultSecretStore: String) : Unit = {
-		val vaultConfig = new VaultConfig().address(vaultEndpoint).build()
-		val vaultClient = new Vault(vaultConfig)
-		val configurations = vaultClient.logical().read(vaultSecretStore).getData()
-		val dbEndpoint = configurations.get(DatabaseEndpoint)
-		val dbPassword = configurations.get(DatabasePassword)
-
-		config = Some(SimpleScalaRestApiConfig(
-			vaultEndpoint,
-			vaultSecretStore,
-			dbEndpoint,
-			dbPassword
-		))
-	}
-
-	def reload() : Unit = {
-		init(config.get.vaultEndpoint, config.get.vaultSecretStore)
-	}
+					vaultEndpoint, vaultSecretStore, vaultToken,
+					databaseDriver, databaseHost, databasePort,
+					databaseName, databaseUser, databasePassword,
+					databaseSslEnabled,
+					serverIp, serverPort
+				)
 
 }
 
 class SimpleScalaRestApiConfig (
 	val vaultEndpoint: String,
 	val vaultSecretStore: String,
-	val dbEndpoint: String,
-	val dbPassword: String
-)
+	val vaultToken: String,
+	val databaseDriver: String,
+	val databaseHost: String,
+	val databasePort: Int,
+	val databaseName: String,
+	val databaseUser: String,
+	val databasePassword: String,
+	val databaseSslEnabled: Boolean,
+	val serverIp: String,
+	val serverPort: Int
+) {
+	override def toString() : String = {
+		f"""vaultEndpoint: $vaultEndpoint
+vaultSecretStore: $vaultSecretStore
+vaultToken: $vaultToken
+databaseDriver: $databaseDriver
+databaseHost: $databaseHost
+databasePort: $databasePort
+databaseName: $databaseName
+databaseUser: $databaseUser
+databasePassword: $databasePassword
+databaseSslEnabled: $databaseSslEnabled
+serverIp: $serverIp
+serverPort: $serverPort
+"""
+	}
+}

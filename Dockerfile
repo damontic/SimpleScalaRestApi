@@ -1,14 +1,15 @@
 FROM damontic/ojdk8-git-sbt-builder:latest as builder
 LABEL stage=intermediate
 ARG version=0.0.0
+ENV APP_VER ${version}
 WORKDIR /scala
-RUN git clone https://github.com/damontic/SimpleScalaRestApi.git
-WORKDIR /scala/SimpleScalaRestApi
+RUN git clone https://github.com/damontic/simple-scala-rest-api.git
+WORKDIR /scala/simple-scala-rest-api
 RUN git checkout $version
 RUN sbt assembly
 
 FROM openjdk:8-jre-alpine
 ARG version=0.0.0
 ENV VERSION ${version}
-COPY --from=builder /scala/SimpleScalaRestApi/target/scala-2.12/SimpleScalaRestApi_2.12-$version.jar .
-CMD java -jar SimpleScalaRestApi_2.12-$VERSION.jar
+COPY --from=builder /scala/simple-scala-rest-api/target/scala-2.12/simple-scala-rest-api_2.12-$version.jar .
+CMD java -jar simple-scala-rest-api_2.12-$VERSION.jar
