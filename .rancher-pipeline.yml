@@ -3,5 +3,12 @@ stages:
   steps:
   - runScriptConfig:
       image: damontic/ojdk8-git-sbt-builder
-      shellScript: |-
-        sbt test
+      shellScript: sbt test
+- name: Publish
+  steps:
+  - publishImageConfig:
+      dockerfilePath: ./Dockerfile
+      buildContext: .
+      tag: qa-toolsnexus.marchex.com:5001/s4n/scalasimpletest
+      pushRemote: true
+      registry: 127.0.0.1:34397
