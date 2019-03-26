@@ -12,3 +12,5 @@ stages:
       tag: qa-toolsnexus.marchex.com:5001/s4n/scalasimpletest
       pushRemote: true
       registry: 127.0.0.1:34397
+    env:
+      PLUGIN_BUILD_ARGS: version=0.0.2-ut.6
