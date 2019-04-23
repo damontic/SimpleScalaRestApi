@@ -30,7 +30,7 @@ spec:
     spec:
       containers:
       - name: ssra
-        image: damontic/simplescalarestapi:0.0.1-alpha.0
+        image: damontic/simplescalarestapi:0.0.2
         imagePullPolicy: Always
         ports:
         - containerPort: 8080
@@ -38,4 +38,4 @@ spec:
         - name: ENVIRONMENT
           value: "Development"
         - name: VERSION
-          value: "0.0.1-alpha.0"
+          value: "0.0.2"

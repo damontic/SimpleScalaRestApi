@@ -12,4 +12,5 @@ FROM damontic/java-jdk-consul-template:1-8-0-20
 ARG version=0.0.0
 ENV VERSION ${version}
 COPY --from=builder /scala/simple-scala-rest-api/target/scala-2.12/simple-scala-rest-api_2.12-$version.jar .
-CMD java -jar simple-scala-rest-api_2.12-$VERSION.jar
+COPY init.sh application.conf.template consul_template_config.hcl .
+CMD sh init.sh
