@@ -1,16 +1,7 @@
 package co.s4n.config;
 
 object SimpleScalaRestApiConfig {
-
-	val DatabaseEndpoint = "database_endpoint"
-	val DatabasePassword = "database_password"
-
-	var config : Option[SimpleScalaRestApiConfig] = None
-
 	def apply(
-					vaultEndpoint: String,
-					vaultSecretStore: String,
-					vaultToken: String,
 					databaseDriver: String,
 					databaseHost: String,
 					databasePort: Int,
@@ -22,7 +13,6 @@ object SimpleScalaRestApiConfig {
 					serverPort: Int
 			) : SimpleScalaRestApiConfig =
 				new SimpleScalaRestApiConfig(
-					vaultEndpoint, vaultSecretStore, vaultToken,
 					databaseDriver, databaseHost, databasePort,
 					databaseName, databaseUser, databasePassword,
 					databaseSslEnabled,
@@ -32,9 +22,6 @@ object SimpleScalaRestApiConfig {
 }
 
 class SimpleScalaRestApiConfig (
-	val vaultEndpoint: String,
-	val vaultSecretStore: String,
-	val vaultToken: String,
 	val databaseDriver: String,
 	val databaseHost: String,
 	val databasePort: Int,
@@ -46,10 +33,7 @@ class SimpleScalaRestApiConfig (
 	val serverPort: Int
 ) {
 	override def toString() : String = {
-		f"""vaultEndpoint: $vaultEndpoint
-vaultSecretStore: $vaultSecretStore
-vaultToken: $vaultToken
-databaseDriver: $databaseDriver
+		f"""databaseDriver: $databaseDriver
 databaseHost: $databaseHost
 databasePort: $databasePort
 databaseName: $databaseName

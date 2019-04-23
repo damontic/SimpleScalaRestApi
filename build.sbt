@@ -2,7 +2,7 @@ lazy val root = (project in file(".")).
   settings(
     name := "simple-scala-rest-api",
     version      in ThisBuild := sys.env.get("APP_VER").getOrElse("0.0.0"),
-    scalaVersion := "2.12.7",
+    scalaVersion := "2.12.8",
     test in assembly := {}
   )
 
@@ -19,7 +19,6 @@ libraryDependencies ++= {
     val akkaStreamVersion = "2.5.19"
     val scalaJava8CompatVersion = "0.9.0"
     val prometheusAkkaHttpVersion = "0.4.0"
-    val vaultJavaVersion = "3.1.0"
     val postgresqlVersion = "42.2.5"
 
     val scalaTestVersion = "3.0.5"
@@ -31,7 +30,6 @@ libraryDependencies ++= {
         "com.typesafe.akka" %% "akka-stream" % akkaStreamVersion,
         "org.scala-lang.modules" %% "scala-java8-compat" % scalaJava8CompatVersion,
         "com.lonelyplanet" %% "prometheus-akka-http" % prometheusAkkaHttpVersion,
-        "com.bettercloud" % "vault-java-driver" % vaultJavaVersion,
         "org.postgresql" % "postgresql" % postgresqlVersion,
         "org.scalatest" % "scalatest_2.12" % scalaTestVersion % "test"
     )
