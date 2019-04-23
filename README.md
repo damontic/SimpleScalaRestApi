@@ -6,7 +6,7 @@ It has simple tests and can be built into a fat jar using the sbt-assembly plugi
 You can quickly create a docker container of this application. e.g.:
 ```
 cd docker
-docker build --build-arg version=0.0.2 -t damontic/simplescalarestapi:0.0.2  .
+docker build --build-arg version=0.0.3-ut.1 -t damontic/simplescalarestapi:0.0.3-ut.1  .
 ```
 
 ## Tests
