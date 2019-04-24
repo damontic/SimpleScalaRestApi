@@ -10,7 +10,7 @@ consul {
 }
 
 vault {
-  address      = "local-vault.default.svc.cluster.local:8200"
+  address      = "http://local-vault.default.svc.cluster.local:8200"
   grace        = "5m"
   token        = "some_token"
   unwrap_token = false

@@ -2,11 +2,11 @@ ssra {
     
     database {
         driver = "org.postgresql.Driver"
-        host = "localhost"
+        host = "{{ key "ssra/development/database/host"}}"
         port = 5432
-        name = "ssra"
-        user = "ssrauser"
-        password = "ssrapass"
+        name = "{{ key "ssra/development/database/name"}}"
+        user = "{{ key "ssra/development/database/user"}}"
+        password = "{{ with secret "secret/ssra/development" }}{{ .Data.database_password }}{{ end }}"
         ssl_enabled = false
     }
 
